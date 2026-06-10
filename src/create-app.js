@@ -17,7 +17,7 @@ import {
   updateStatus as storeUpdateStatus,
   resetFailed as storeResetFailed,
 } from "./store.js";
-import { isVercel, scrapeUnavailableMessage } from "./env.js";
+import { isVercel } from "./env.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.APP_PORT || 3847);
@@ -50,7 +50,8 @@ export function createApp() {
       ok: true,
       port: PORT,
       vercel: isVercel(),
-      scrapeAvailable: !isVercel(),
+      scrapeAvailable: true,
+      scrapeVersion: 2,
     });
   });
 
@@ -130,7 +131,7 @@ export function createApp() {
         trackerReady: trackerReady || store.length > 0,
         port: PORT,
         vercel: isVercel(),
-        scrapeAvailable: !isVercel(),
+        scrapeAvailable: true,
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -215,17 +216,14 @@ export function createApp() {
   });
 
   app.get("/api/scrape/sites", (_req, res) => {
-    res.json({ sites: listScraperSites(), scrapeAvailable: !isVercel() });
+    res.json({ sites: listScraperSites(), scrapeAvailable: true });
   });
 
   app.get("/api/scrape/status", (_req, res) => {
-    res.json({ ...getScrapeJob(), scrapeAvailable: !isVercel() });
+    res.json({ ...getScrapeJob(), scrapeAvailable: true });
   });
 
   app.post("/api/scrape/find-for-luke", async (_req, res) => {
-    if (isVercel()) {
-      return res.status(503).json({ error: scrapeUnavailableMessage() });
-    }
     try {
       const { runLukeScrapeInBackground, getScrapeJob: getJob } = await loadScrapers();
       const job = getJob();
@@ -240,9 +238,6 @@ export function createApp() {
   });
 
   app.post("/api/scrape/:site", async (req, res) => {
-    if (isVercel()) {
-      return res.status(503).json({ error: scrapeUnavailableMessage() });
-    }
     try {
       const site = req.params.site;
       if (site === "bold") {
@@ -266,6 +261,9 @@ export function createApp() {
       }
       if (req.body.full && site === "fastweb") options.maxStates = null;
       if (req.body.stateNames) options.stateNames = req.body.stateNames;
+      if (site === "fastweb" && (isVercel() || req.body.ohio || req.body.lite)) {
+        options.lite = true;
+      }
 
       const status = await runScraperInBackground(site, options);
       res.json(status);
@@ -276,7 +274,7 @@ export function createApp() {
 
   app.post("/api/scrape/:site/start-queue", async (req, res) => {
     if (isVercel()) {
-      return res.status(503).json({ error: scrapeUnavailableMessage() });
+      return res.status(503).json({ error: "Apply queue is not available on the hosted app." });
     }
     try {
       const settings = loadSettings();

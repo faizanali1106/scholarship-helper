@@ -6,6 +6,7 @@ import {
   getCachedList,
   importBackup,
   mergeLists,
+  mergeScrapedItems,
   migrateFromServerRows,
   saveCachedList,
   setStatus,
@@ -16,6 +17,7 @@ const $ = (id) => document.getElementById(id);
 let scholarships = [];
 let scrapePollTimer = null;
 let hostedMode = false;
+let studentProfile = null;
 
 const PAGE_META = {
   scholarships: {
@@ -255,19 +257,27 @@ async function fetchScholarshipRows() {
 }
 
 function applyHostedUi() {
-  const importCard = document.querySelector(".import-card");
-  if (!importCard || !hostedMode) return;
-
-  importCard.querySelector(".card-head p").textContent =
-    "On the hosted app, your checklist is pre-loaded. Statuses save in this browser. To import new links, run npm start on your computer, then Restore backup here.";
-
-  document.querySelectorAll("#btnFindForLuke, #btnFindForLukeSide, .scrape-btn").forEach((btn) => {
-    btn.disabled = true;
-    btn.title = "Import only works when running locally (npm start)";
-  });
-
+  if (!hostedMode) return;
   const hostedNote = document.getElementById("hostedNote");
-  if (hostedNote) hostedNote.classList.remove("hidden");
+  if (hostedNote) {
+    hostedNote.classList.remove("hidden");
+    hostedNote.innerHTML =
+      "☁️ <strong>Hosted mode</strong> — click <strong>Find scholarships</strong> and stay on this page for 1–2 minutes while we fetch new links. Statuses save in this browser.";
+  }
+}
+
+function absorbScrapeResult(job) {
+  const result = job?.result || job;
+  const fromItems = result?.items || [];
+  const fromSites = (result?.sites || []).flatMap((s) => s.items || []);
+  const newItems = fromItems.length ? fromItems : fromSites;
+  if (newItems.length) {
+    scholarships = mergeScrapedItems(newItems, scholarships, studentProfile);
+    renderStats(buildSummary(scholarships));
+    renderScholarshipList();
+    return true;
+  }
+  return false;
 }
 
 async function refreshScholarships() {
@@ -309,8 +319,8 @@ async function pollScrapeJob() {
       return;
     }
     const r = job.result || {};
+    if (!absorbScrapeResult(job)) await refreshScholarships();
     showFeedback("scrapeStatus", r.message || `Done — added ${r.synced ?? "?"} new scholarships`);
-    await refreshScholarships();
   } catch (e) {
     clearInterval(scrapePollTimer);
     scrapePollTimer = null;
@@ -325,22 +335,44 @@ function startScrapePoll() {
 }
 
 async function runScrape(endpoint, body = {}) {
-  if (hostedMode) {
-    showFeedback(
-      "scrapeStatus",
-      "Import runs on your computer (npm start). Use Restore backup to load scholarships here.",
-      true
-    );
-    return;
-  }
   setScrapeLoading(true);
-  showFeedback("scrapeStatus", "Starting import...");
+  const waitMsg = hostedMode
+    ? "Finding scholarships — stay on this page (1–2 min)..."
+    : "Starting import...";
+  showFeedback("scrapeStatus", waitMsg);
+
   try {
-    await api(endpoint, {
+    const job = await api(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
+      timeout: hostedMode ? 300000 : 120000,
     });
+
+    if (hostedMode && !job.running) {
+      setScrapeLoading(false);
+      const r = job.result || {};
+      const hasItems = absorbScrapeResult(job) || (r.items?.length > 0);
+      if (job.error && !hasItems) {
+        showFeedback("scrapeStatus", job.error, true);
+        return;
+      }
+      if (!hasItems && r.synced === 0) {
+        showFeedback(
+          "scrapeStatus",
+          r.message ||
+            "Done — no new scholarships (may already be in your list). Try Niche or Fastweb buttons."
+        );
+        return;
+      }
+      const note = r.warnings?.length ? ` ${r.warnings.join(" ")}` : "";
+      showFeedback(
+        "scrapeStatus",
+        (r.message || "Done — scholarships added to your list.") + note
+      );
+      return;
+    }
+
     startScrapePoll();
   } catch (e) {
     setScrapeLoading(false);
@@ -480,6 +512,13 @@ async function init() {
   try {
     const health = await api("/api/health");
     hostedMode = Boolean(health.vercel);
+    if (hostedMode && health.scrapeVersion !== 2) {
+      showFeedback(
+        "scrapeStatus",
+        "⚠️ Hosted app is on an older version — redeploy from GitHub for the latest Find scholarships fix.",
+        true
+      );
+    }
   } catch {
     hostedMode = !window.location.hostname.includes("localhost");
   }
@@ -518,6 +557,7 @@ async function init() {
   $("heroNote").textContent = `Welcome back, ${first}`;
   document.title = `Scholarship Hub — ${first}`;
 
+  studentProfile = profileRes.profile;
   renderProfile(profileRes.profile);
   renderEssays(essayToolkit);
   applyHostedUi();

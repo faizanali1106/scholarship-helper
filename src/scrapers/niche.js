@@ -1,9 +1,10 @@
-import { chromium } from "playwright";
 import path from "path";
 import fs from "fs";
 import { config } from "../config.js";
+import { launchBrowser } from "./browser.js";
 import { persistScraped } from "./persist.js";
 import { updateScrapeJob } from "./scrape-job.js";
+import { isVercel } from "../env.js";
 
 const LIST_URL = "https://www.niche.com/colleges/scholarships/";
 const STORAGE = path.join(config.root, "data", "niche-state.json");
@@ -15,15 +16,15 @@ function clean(text) {
 }
 
 async function launchContext(headless) {
-  const browser = await chromium.launch({ headless });
-  const opts = fs.existsSync(STORAGE) ? { storageState: STORAGE } : {};
+  const browser = await launchBrowser(headless);
+  const opts = !isVercel() && fs.existsSync(STORAGE) ? { storageState: STORAGE } : {};
   const context = await browser.newContext(opts);
   return { browser, context };
 }
 
 export async function runNicheScrape(options = {}) {
   const headless = options.headless !== false;
-  const maxPages = options.maxPages ?? 5;
+  const maxPages = options.maxPages ?? (isVercel() ? 2 : 5);
   const results = [];
 
   updateScrapeJob({ message: "Opening Niche scholarships..." });
@@ -101,7 +102,9 @@ export async function runNicheScrape(options = {}) {
       }
     }
 
-    await context.storageState({ path: STORAGE }).catch(() => {});
+    if (!isVercel()) {
+      await context.storageState({ path: STORAGE }).catch(() => {});
+    }
   } finally {
     await browser.close();
   }
@@ -114,6 +117,7 @@ export async function runNicheScrape(options = {}) {
     scraped: results.length,
     synced: saved.added,
     skipped: saved.skipped,
+    items: results,
     message: `Saved ${saved.added} Niche scholarships (${saved.skipped} duplicates skipped)`,
     google: saved.google,
   };

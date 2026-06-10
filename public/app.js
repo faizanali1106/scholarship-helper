@@ -1,8 +1,21 @@
-export async function api(path, options) {
-  const res = await fetch(path, options);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Something went wrong");
-  return data;
+export async function api(path, options = {}) {
+  const { timeout = 30000, ...fetchOptions } = options;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const res = await fetch(path, { ...fetchOptions, signal: controller.signal });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Something went wrong");
+    return data;
+  } catch (err) {
+    if (err.name === "AbortError") {
+      throw new Error("Request timed out — scraping can take 1–2 minutes, please wait.");
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 export function renderQueue(queue) {

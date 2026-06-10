@@ -2,6 +2,7 @@
  * Browser-local persistence — no database required.
  * Statuses (and optional list cache) survive reloads on Vercel and localhost.
  */
+import { enrichRecord } from "./match-client.js";
 
 const STATUS_KEY = "scholarship-hub-status-v1";
 const LIST_KEY = "scholarship-hub-list-v1";
@@ -69,6 +70,20 @@ export function mergeLists(serverList, cachedList) {
     byUrl.set(normalizeUrl(row.url), row);
   }
   return [...byUrl.values()];
+}
+
+/** Merge newly scraped items into the browser cache (used on Vercel after Find). */
+export function mergeScrapedItems(newItems, existingList = null, profile = null) {
+  const base = existingList ?? getCachedList();
+  const scored = (newItems || []).map((item) =>
+    enrichRecord({ ...item, status: item.status || "Not Started" }, profile)
+  );
+  const merged = mergeLists(base, scored);
+  const withStatus = applyStatuses(
+    merged.map((s) => ({ ...s, status: s.status || "Not Started" }))
+  );
+  saveCachedList(withStatus);
+  return withStatus;
 }
 
 export function getCachedList() {

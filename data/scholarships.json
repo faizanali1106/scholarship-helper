@@ -195,7 +195,121 @@
       "appliedAt": "",
       "screenshot": "",
       "scrapedAt": "2026-06-10T15:07:15.695Z"
+    },
+    {
+      "name": "Beyond Scholars — Beyond Scholars",
+      "organization": "Beyond Type 1",
+      "amount": "",
+      "deadline": "",
+      "description": "Beyond Scholars is a scholarship program designed specifically for the diabetes community.",
+      "url": "https://beyondtype1.org/beyond-scholars/",
+      "source": "Diabetes Scholars",
+      "status": "Not Started",
+      "applyResult": "",
+      "appliedAt": "",
+      "screenshot": "",
+      "scrapedAt": "2026-06-10T17:48:31.059Z",
+      "state": "",
+      "matchScore": 7,
+      "matchTags": [
+        "Diabetes"
+      ]
+    },
+    {
+      "name": "Español",
+      "organization": "Beyond Type 1",
+      "amount": "",
+      "deadline": "",
+      "description": "",
+      "url": "https://beyondtype1.org/es/beyond-scholars/",
+      "source": "Diabetes Scholars",
+      "status": "Not Started",
+      "applyResult": "",
+      "appliedAt": "",
+      "screenshot": "",
+      "scrapedAt": "2026-06-10T17:48:31.061Z",
+      "state": "",
+      "matchScore": 7,
+      "matchTags": [
+        "Diabetes"
+      ]
+    },
+    {
+      "name": "Beyond Barriers",
+      "organization": "Beyond Type 1",
+      "amount": "",
+      "deadline": "",
+      "description": "",
+      "url": "https://beyondtype1.org/diabetes-grant-funding-with-beyond-barriers/",
+      "source": "Diabetes Scholars",
+      "status": "Not Started",
+      "applyResult": "",
+      "appliedAt": "",
+      "screenshot": "",
+      "scrapedAt": "2026-06-10T17:48:31.062Z",
+      "state": "",
+      "matchScore": 7,
+      "matchTags": [
+        "Diabetes"
+      ]
+    },
+    {
+      "name": "Diabetes Innovation Grants",
+      "organization": "Beyond Type 1",
+      "amount": "",
+      "deadline": "",
+      "description": "",
+      "url": "https://beyondtype1.org/diabetes-innovation-accelerator-grants/",
+      "source": "Diabetes Scholars",
+      "status": "Not Started",
+      "applyResult": "",
+      "appliedAt": "",
+      "screenshot": "",
+      "scrapedAt": "2026-06-10T17:48:31.062Z",
+      "state": "",
+      "matchScore": 7,
+      "matchTags": [
+        "Diabetes"
+      ]
+    },
+    {
+      "name": "The Diabetes Link",
+      "organization": "The Diabetes Link",
+      "amount": "",
+      "deadline": "",
+      "description": "",
+      "url": "https://thediabeteslink.org/",
+      "source": "Diabetes Scholars",
+      "status": "Not Started",
+      "applyResult": "",
+      "appliedAt": "",
+      "screenshot": "",
+      "scrapedAt": "2026-06-10T17:48:31.063Z",
+      "state": "",
+      "matchScore": 7,
+      "matchTags": [
+        "Diabetes"
+      ]
+    },
+    {
+      "name": "View Scholarship Options",
+      "organization": "The Diabetes Link",
+      "amount": "",
+      "deadline": "",
+      "description": "",
+      "url": "https://thediabeteslink.org/find-answers/search-scholarships",
+      "source": "Diabetes Scholars",
+      "status": "Not Started",
+      "applyResult": "",
+      "appliedAt": "",
+      "screenshot": "",
+      "scrapedAt": "2026-06-10T17:48:31.063Z",
+      "state": "",
+      "matchScore": 7,
+      "matchTags": [
+        "Diabetes"
+      ]
     }
   ],
-  "updatedAt": "2026-06-10T17:25:27.671Z"
+  "updatedAt": "2026-06-10T17:51:45.959Z"
 }

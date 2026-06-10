@@ -3,8 +3,10 @@ import fs from "fs";
 import path from "path";
 import { parse } from "csv-parse/sync";
 import { config } from "../config.js";
+import { isVercel } from "../env.js";
 import { persistScraped } from "./persist.js";
 import { updateScrapeJob } from "./scrape-job.js";
+import { runFastwebLiteScrape } from "./fastweb-lite.js";
 
 const require = createRequire(import.meta.url);
 const FASTWEB_DIR = path.join(config.root, "fastweb");
@@ -30,6 +32,10 @@ function parseFastwebCsv(filePath) {
 }
 
 export async function runFastwebScrape(options = {}) {
+  if (isVercel() || options.lite) {
+    return runFastwebLiteScrape(options);
+  }
+
   const headless = options.headless !== false;
   const maxStates = options.maxStates ?? 3;
   const csvFile = csvPath();
@@ -69,6 +75,7 @@ export async function runFastwebScrape(options = {}) {
     csvFile: "fastweb/fastweb_scholarships.csv",
     message: `Saved ${saved.added} Fastweb scholarships (${saved.skipped} duplicates skipped)`,
     google: saved.google,
+    items,
     errors: scrapeResult.errors || [],
   };
 }

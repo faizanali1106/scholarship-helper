@@ -9,6 +9,7 @@ import fs from "fs";
 import path from "path";
 import { config } from "./config.js";
 import { enrichRecord } from "./match.js";
+import { isVercel } from "./env.js";
 
 const STORE_PATH = path.join(config.root, "data", "scholarships.json");
 
@@ -123,15 +124,18 @@ export function addScholarships(items, source) {
       skipped++;
       continue;
     }
-    const enriched = enrichRecord(record);
-    existing.set(key, enriched);
-    data.scholarships.push(enriched);
+    existing.set(key, enrichRecord(record));
+    if (!isVercel()) {
+      data.scholarships.push(existing.get(key));
+    }
     added++;
   }
 
-  data.updatedAt = new Date().toISOString();
-  writeRaw(data);
-  return { added, skipped, total: data.scholarships.length };
+  if (!isVercel()) {
+    data.updatedAt = new Date().toISOString();
+    writeRaw(data);
+  }
+  return { added, skipped, total: isVercel() ? existing.size : data.scholarships.length };
 }
 
 /**
