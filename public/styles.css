@@ -431,6 +431,25 @@ body::before {
   font-size: 0.95rem;
 }
 
+.hosted-banner {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--accent-subtle);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.hosted-banner strong { color: var(--accent-light); }
+
+.hosted-banner code {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  background: var(--bg-elevated);
+  border-radius: 4px;
+}
+
 .hero-stats {
   display: flex;
   gap: 12px;

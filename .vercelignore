@@ -1,0 +1,8 @@
+.browser-data
+data/apply-screenshots
+data/settings.json
+data/niche-state.json
+fastweb/state.json
+__MACOSX
+scholarship-bot
+*.log

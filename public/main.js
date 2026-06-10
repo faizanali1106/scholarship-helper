@@ -15,6 +15,7 @@ const $ = (id) => document.getElementById(id);
 
 let scholarships = [];
 let scrapePollTimer = null;
+let hostedMode = false;
 
 const PAGE_META = {
   scholarships: {
@@ -237,15 +238,41 @@ function normalizeScholarshipRows(rows) {
   }));
 }
 
-async function refreshScholarships() {
-  let serverList = [];
+async function fetchScholarshipRows() {
   try {
     const data = await api("/api/scholarships");
-    serverList = normalizeScholarshipRows(data.scholarships);
-    migrateFromServerRows(serverList);
+    return normalizeScholarshipRows(data.scholarships);
   } catch {
-    /* API unavailable (e.g. static Vercel) — use browser cache */
+    try {
+      const res = await fetch("/data/scholarships.json");
+      if (!res.ok) throw new Error("no static data");
+      const data = await res.json();
+      return normalizeScholarshipRows(data.scholarships);
+    } catch {
+      return [];
+    }
   }
+}
+
+function applyHostedUi() {
+  const importCard = document.querySelector(".import-card");
+  if (!importCard || !hostedMode) return;
+
+  importCard.querySelector(".card-head p").textContent =
+    "On the hosted app, your checklist is pre-loaded. Statuses save in this browser. To import new links, run npm start on your computer, then Restore backup here.";
+
+  document.querySelectorAll("#btnFindForLuke, #btnFindForLukeSide, .scrape-btn").forEach((btn) => {
+    btn.disabled = true;
+    btn.title = "Import only works when running locally (npm start)";
+  });
+
+  const hostedNote = document.getElementById("hostedNote");
+  if (hostedNote) hostedNote.classList.remove("hidden");
+}
+
+async function refreshScholarships() {
+  let serverList = await fetchScholarshipRows();
+  if (serverList.length) migrateFromServerRows(serverList);
 
   const merged = mergeLists(serverList, getCachedList());
   scholarships = applyStatuses(
@@ -298,6 +325,14 @@ function startScrapePoll() {
 }
 
 async function runScrape(endpoint, body = {}) {
+  if (hostedMode) {
+    showFeedback(
+      "scrapeStatus",
+      "Import runs on your computer (npm start). Use Restore backup to load scholarships here.",
+      true
+    );
+    return;
+  }
   setScrapeLoading(true);
   showFeedback("scrapeStatus", "Starting import...");
   try {
@@ -438,11 +473,42 @@ function renderEssays(toolkit) {
 
 // ---- Init ----
 async function init() {
-  const [info, profileRes, essayToolkit] = await Promise.all([
-    api("/api/info"),
-    api("/api/profile"),
-    api("/api/essay/toolkit"),
-  ]);
+  let info = {};
+  let profileRes = { profile: {} };
+  let essayToolkit = { master: "", wordCount: 0, angles: [] };
+
+  try {
+    const health = await api("/api/health");
+    hostedMode = Boolean(health.vercel);
+  } catch {
+    hostedMode = !window.location.hostname.includes("localhost");
+  }
+
+  try {
+    [info, profileRes, essayToolkit] = await Promise.all([
+      api("/api/info"),
+      api("/api/profile"),
+      api("/api/essay/toolkit"),
+    ]);
+    hostedMode = hostedMode || Boolean(info.vercel);
+  } catch {
+    try {
+      const [p, e] = await Promise.all([
+        fetch("/data/profile.json").then((r) => r.json()),
+        fetch("/data/essay-angles.json").then((r) => r.json()),
+      ]);
+      profileRes = { profile: p };
+      const essayText = await fetch("/data/master-essay.txt").then((r) => r.text());
+      essayToolkit = {
+        master: essayText,
+        wordCount: essayText.trim().split(/\s+/).filter(Boolean).length,
+        angles: e,
+      };
+      info = { profileName: p.fullName };
+    } catch {
+      /* partial offline */
+    }
+  }
 
   const name = info.profileName || "Student";
   const first = profileRes.profile?.preferredName || profileRes.profile?.firstName || name.split(" ")[0];
@@ -454,6 +520,7 @@ async function init() {
 
   renderProfile(profileRes.profile);
   renderEssays(essayToolkit);
+  applyHostedUi();
   showTab("scholarships");
 
   await refreshScholarships();

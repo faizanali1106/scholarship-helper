@@ -11,7 +11,8 @@
     "scrape:fastweb": "node -e \"import('./src/scrapers/fastweb-sync.js').then(m=>m.runFastwebScrape({maxStates:3})).then(console.log).catch(e=>{console.error(e);process.exit(1)})\"",
     "scrape:niche": "node -e \"import('./src/scrapers/niche.js').then(m=>m.runNicheScrape({maxPages:3})).then(console.log).catch(e=>{console.error(e);process.exit(1)})\"",
     "scrape:diabetes": "node -e \"import('./src/scrapers/diabetes-scholars.js').then(m=>m.runDiabetesScholarsScrape()).then(console.log).catch(e=>{console.error(e);process.exit(1)})\"",
-    "setup:scrapers": "npm install && cd fastweb && npm install && npx playwright install chromium"
+    "setup:scrapers": "npm install && cd fastweb && npm install && npx playwright install chromium",
+    "vercel-build": "node scripts/vercel-build.js"
   },
   "engines": {
     "node": ">=18"

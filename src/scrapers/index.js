@@ -1,6 +1,7 @@
 import { runFastwebScrape } from "./fastweb-sync.js";
 import { runNicheScrape } from "./niche.js";
 import { runDiabetesScholarsScrape } from "./diabetes-scholars.js";
+import { listScraperSites } from "./sites.js";
 import {
   startScrapeJob,
   finishScrapeJob,
@@ -9,20 +10,13 @@ import {
   updateScrapeJob,
 } from "./scrape-job.js";
 
+export { listScraperSites };
+
 const RUNNERS = {
   fastweb: runFastwebScrape,
   niche: runNicheScrape,
   "diabetes-scholars": runDiabetesScholarsScrape,
 };
-
-export function listScraperSites() {
-  return [
-    { id: "bold", label: "Bold.org", via: "extension", note: "Use Chrome extension → Apply & Scrape" },
-    { id: "fastweb", label: "Fastweb.com", via: "dashboard" },
-    { id: "niche", label: "Niche.com", via: "dashboard" },
-    { id: "diabetes-scholars", label: "Diabetes Scholars Foundation", via: "dashboard" },
-  ];
-}
 
 export async function runScraperInBackground(site, options = {}) {
   const runner = RUNNERS[site];
