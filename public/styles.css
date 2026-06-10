@@ -1034,6 +1034,23 @@ body::before {
   margin-bottom: 14px;
 }
 
+.persist-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 14px 0 12px;
+  line-height: 1.5;
+}
+
+.persist-note strong { color: var(--accent-light); }
+
+.backup-btns { margin-top: 4px; }
+
+.file-import-btn {
+  cursor: pointer;
+  text-align: center;
+  margin: 0;
+}
+
 /* ---- Feedback ---- */
 .feedback {
   font-size: 0.85rem;

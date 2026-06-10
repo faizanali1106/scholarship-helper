@@ -1,4 +1,15 @@
 import { api } from "./app.js";
+import {
+  applyStatuses,
+  buildSummary,
+  exportBackup,
+  getCachedList,
+  importBackup,
+  mergeLists,
+  migrateFromServerRows,
+  saveCachedList,
+  setStatus,
+} from "./status-store.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -100,7 +111,8 @@ function statusClass(status) {
 function renderStats(summary) {
   const total = summary.total || 0;
   const done = summary.submitted || 0;
-  const todo = (summary.notStarted || 0) + (summary.failed || 0);
+  const todo =
+    (summary.notStarted || 0) + (summary.inProgress || 0) + (summary.failed || 0);
   const match = scholarships.filter((s) => (s.matchScore || 0) >= 3).length;
   const pct = total ? Math.round((done / total) * 100) : 0;
 
@@ -191,28 +203,22 @@ function renderScholarshipList() {
     .join("");
 
   list.querySelectorAll(".status-select").forEach((sel) => {
-    sel.addEventListener("change", async () => {
+    sel.addEventListener("change", () => {
       const url = decodeURIComponent(sel.dataset.url);
       const card = sel.closest(".sch-card");
-      try {
-        await api("/api/scholarships/status", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url, status: sel.value }),
-        });
-        const item = scholarships.find((x) => x.url === url);
-        if (item) item.status = sel.value;
-        card?.classList.remove("status-submitted", "status-progress");
-        card?.classList.add(statusClass(sel.value));
-        const data = await api("/api/scholarships");
-        scholarships = (data.scholarships || []).map((s) =>
-          s.status === "Failed" ? { ...s, status: "Not Started" } : s
-        );
-        renderStats(data.summary || {});
-        renderScholarshipList();
-      } catch (e) {
-        showFeedback("scrapeStatus", e.message, true);
-      }
+      setStatus(url, sel.value);
+      const item = scholarships.find((x) => x.url === url);
+      if (item) item.status = sel.value;
+      saveCachedList(scholarships);
+      card?.classList.remove("status-submitted", "status-progress");
+      card?.classList.add(statusClass(sel.value));
+      renderStats(buildSummary(scholarships));
+      // Best-effort server sync when running locally
+      api("/api/scholarships/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url, status: sel.value }),
+      }).catch(() => {});
     });
   });
 }
@@ -224,12 +230,29 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+function normalizeScholarshipRows(rows) {
+  return (rows || []).map((s) => ({
+    ...s,
+    status: s.status === "Failed" ? "Not Started" : s.status || "Not Started",
+  }));
+}
+
 async function refreshScholarships() {
-  const data = await api("/api/scholarships");
-  scholarships = (data.scholarships || []).map((s) =>
-    s.status === "Failed" ? { ...s, status: "Not Started" } : s
+  let serverList = [];
+  try {
+    const data = await api("/api/scholarships");
+    serverList = normalizeScholarshipRows(data.scholarships);
+    migrateFromServerRows(serverList);
+  } catch {
+    /* API unavailable (e.g. static Vercel) — use browser cache */
+  }
+
+  const merged = mergeLists(serverList, getCachedList());
+  scholarships = applyStatuses(
+    merged.map((s) => ({ ...s, status: s.status || "Not Started" }))
   );
-  renderStats(data.summary || {});
+  saveCachedList(scholarships);
+  renderStats(buildSummary(scholarships));
   renderScholarshipList();
 }
 
@@ -293,6 +316,33 @@ async function runScrape(endpoint, body = {}) {
 const findHandler = () => runScrape("/api/scrape/find-for-luke");
 $("btnFindForLuke")?.addEventListener("click", findHandler);
 $("btnFindForLukeSide")?.addEventListener("click", findHandler);
+
+$("btnExportBackup")?.addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(exportBackup(scholarships), null, 2)], {
+    type: "application/json",
+  });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `scholarship-hub-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showFeedback("scrapeStatus", "Backup downloaded — keep this file to restore on another device.");
+});
+
+$("backupFile")?.addEventListener("change", async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    scholarships = importBackup(data);
+    renderStats(buildSummary(scholarships));
+    renderScholarshipList();
+    showFeedback("scrapeStatus", `Restored ${scholarships.length} scholarships from backup.`);
+  } catch (err) {
+    showFeedback("scrapeStatus", err.message || "Invalid backup file", true);
+  }
+  e.target.value = "";
+});
 
 document.querySelectorAll(".scrape-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -406,9 +456,6 @@ async function init() {
   renderEssays(essayToolkit);
   showTab("scholarships");
 
-  try {
-    await api("/api/scholarships/reset-failed", { method: "POST" });
-  } catch {}
   await refreshScholarships();
 }
 

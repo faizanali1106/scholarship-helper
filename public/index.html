@@ -153,6 +153,14 @@
                   <li><span>3</span> Copy from Profile & Essays</li>
                   <li><span>4</span> Submit yourself & update status</li>
                 </ol>
+                <p class="persist-note">Statuses save in <strong>this browser</strong> — they stay after reload. Use backup to move to another device.</p>
+                <div class="btn-stack backup-btns">
+                  <button type="button" class="btn btn-ghost" id="btnExportBackup">Download backup</button>
+                  <label class="btn btn-ghost file-import-btn">
+                    Restore backup
+                    <input type="file" id="backupFile" accept=".json,application/json" hidden />
+                  </label>
+                </div>
               </div>
             </aside>
 
