@@ -1,0 +1,14 @@
+# Deploy on Render: https://render.com → New → Blueprint or Web Service
+# Connect GitHub repo scholarship-helper — Render reads this file automatically.
+
+services:
+  - type: web
+    name: scholarship-hub
+    runtime: node
+    plan: free
+    buildCommand: npm install && npx playwright install chromium
+    startCommand: node src/app-server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production

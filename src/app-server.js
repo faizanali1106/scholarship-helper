@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { createApp } from "./create-app.js";
 import { isVercel } from "./env.js";
 
-const PORT = Number(process.env.APP_PORT || 3847);
+const PORT = Number(process.env.PORT || process.env.APP_PORT || 3847);
 const app = createApp();
 
 function openAppInBrowser() {

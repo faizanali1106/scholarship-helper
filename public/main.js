@@ -511,7 +511,7 @@ async function init() {
 
   try {
     const health = await api("/api/health");
-    hostedMode = Boolean(health.vercel);
+    hostedMode = Boolean(health.hosted || health.vercel);
     if (hostedMode && health.scrapeVersion !== 2) {
       showFeedback(
         "scrapeStatus",
@@ -529,7 +529,7 @@ async function init() {
       api("/api/profile"),
       api("/api/essay/toolkit"),
     ]);
-    hostedMode = hostedMode || Boolean(info.vercel);
+    hostedMode = hostedMode || Boolean(info.hosted || info.vercel);
   } catch {
     try {
       const [p, e] = await Promise.all([

@@ -17,10 +17,10 @@ import {
   updateStatus as storeUpdateStatus,
   resetFailed as storeResetFailed,
 } from "./store.js";
-import { isVercel } from "./env.js";
+import { isVercel, isHosted, hostedPlatform } from "./env.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT = Number(process.env.APP_PORT || 3847);
+const PORT = Number(process.env.PORT || process.env.APP_PORT || 3847);
 
 async function loadScrapers() {
   return import("./scrapers/index.js");
@@ -50,6 +50,8 @@ export function createApp() {
       ok: true,
       port: PORT,
       vercel: isVercel(),
+      hosted: isHosted(),
+      platform: hostedPlatform(),
       scrapeAvailable: true,
       scrapeVersion: 2,
     });
@@ -131,6 +133,8 @@ export function createApp() {
         trackerReady: trackerReady || store.length > 0,
         port: PORT,
         vercel: isVercel(),
+        hosted: isHosted(),
+        platform: hostedPlatform(),
         scrapeAvailable: true,
       });
     } catch (error) {
