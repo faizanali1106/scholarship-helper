@@ -1,0 +1,36 @@
+{
+  "fullName": "Robert Luke Peach",
+  "firstName": "Robert",
+  "lastName": "Peach",
+  "preferredName": "Luke",
+  "email": "dhg3llc@gmail.com",
+  "phone": "513-299-8208",
+  "address": {
+    "street": "385 Overlook Trail",
+    "city": "Lebanon",
+    "state": "OH",
+    "zip": "45036",
+    "full": "385 Overlook Trail, Lebanon, OH 45036"
+  },
+  "highSchool": "Lebanon High School",
+  "gpa": "3.178",
+  "sports": ["Basketball"],
+  "intendedMajor": "Marketing",
+  "careerGoals": "I would like to earn a degree in Marketing so I can better learn how to communicate value with clients while delivering exceptional value.",
+  "diabetesStory": "Living with Type 1 diabetes means there are no off days—every meal, activity, and even stress requires planning around carbs, insulin timing, and physical activity, especially as a student athlete. That constant responsibility built discipline, focus, and accountability beyond what most peers learn in high school.",
+  "fieldMappings": {
+    "firstName": ["first name", "firstname", "fname", "given name"],
+    "lastName": ["last name", "lastname", "lname", "surname", "family name"],
+    "fullName": ["full name", "name", "student name", "applicant name"],
+    "email": ["email", "e-mail", "email address"],
+    "phone": ["phone", "telephone", "mobile", "cell", "phone number"],
+    "street": ["address", "street", "street address", "address line 1", "address1"],
+    "city": ["city", "town"],
+    "state": ["state", "province", "region"],
+    "zip": ["zip", "zip code", "postal", "postal code"],
+    "highSchool": ["high school", "school name", "current school", "secondary school"],
+    "gpa": ["gpa", "grade point average", "cumulative gpa"],
+    "intendedMajor": ["major", "intended major", "field of study", "program of study", "area of study"],
+    "careerGoals": ["career goals", "career goal", "future goals", "professional goals", "objectives"]
+  }
+}

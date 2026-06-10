@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Scholarship Helper",
+  "version": "1.3.0",
+  "description": "Fill scholarship forms and essays from your local profile — works with Scholarship Helper app.",
+  "permissions": ["activeTab", "storage", "sidePanel", "tabs"],
+  "host_permissions": ["http://localhost:3847/*", "https://*/*", "http://*/*"],
+  "action": {
+    "default_title": "Scholarship Helper",
+    "default_popup": "popup.html"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["autofill-engine.js", "page-analyzer.js", "bold-automation.js", "content.js"],
+      "css": ["content.css"],
+      "exclude_matches": ["http://localhost:*/*"]
+    }
+  ]
+}

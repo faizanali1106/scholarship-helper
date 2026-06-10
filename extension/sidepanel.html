@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="panel.css" />
+</head>
+<body>
+  <div class="panel">
+    <header>
+      <div class="logo">🎓</div>
+      <div class="header-text">
+        <h1>Scholarship Helper</h1>
+        <div class="conn">
+          <span id="connDot" class="dot off"></span>
+          <span id="connText">Checking...</span>
+        </div>
+      </div>
+    </header>
+
+    <div id="offlineHelp" class="alert alert-red hidden">
+      <strong>App not running</strong>
+      <p>Start the Scholarship Helper launcher, then click Reload.</p>
+      <button id="btnReload" class="btn-sm">Reload connection</button>
+    </div>
+
+    <div id="guideCard" class="guide-card state-manual">
+      <div id="guideIcon" class="guide-icon">🧭</div>
+      <div id="guideTitle" class="guide-title">You navigate, we fill</div>
+      <div id="guideMessage" class="guide-message">
+        Open the site, log in if needed, go to the application form yourself, then click Fill This Page.
+      </div>
+      <ul id="guideSteps" class="guide-steps">
+        <li>Open the scholarship site (or paste a link below)</li>
+        <li>Log in and navigate to the application form</li>
+        <li>Click <strong>Fill This Page</strong> when the form is on screen</li>
+        <li>Review, submit on the site, then click <strong>I'm Done — Submitted</strong></li>
+      </ul>
+      <button id="btnContinue" class="btn-action btn-continue hidden">
+        I'm Logged In — Continue
+      </button>
+    </div>
+
+    <div class="url-box">
+      <label class="url-label">Open a link</label>
+      <input id="urlInput" type="url" placeholder="Paste scholarship or form URL" />
+      <button id="btnOpenUrl" class="btn-action btn-continue">Open Link</button>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-header">
+        <span id="progressLabel">Not started</span>
+        <span id="progressPct" class="pct">0%</span>
+      </div>
+      <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+    </div>
+
+    <div class="scholarship-card">
+      <div class="sch-label">Current scholarship</div>
+      <div id="currentName" class="sch-name">—</div>
+      <div id="currentUrl" class="sch-url">Start from the dashboard</div>
+    </div>
+
+    <div id="boldAutomationSection" class="bold-automation-section">
+      <div class="section-title">🤖 Bold.org Automation</div>
+      <p class="section-desc">Log into Bold.org, scrape matched scholarships, and save them to your Google Sheet.</p>
+
+      <div class="form-group">
+        <label for="boldEmail">Bold.org Email:</label>
+        <input id="boldEmail" type="email" placeholder="your.email@example.com" class="form-input" />
+      </div>
+
+      <div class="form-group">
+        <label for="boldPassword">Bold.org Password:</label>
+        <input id="boldPassword" type="password" placeholder="••••••••" class="form-input" />
+      </div>
+
+      <button id="btnApply" class="btn btn-apply">
+        <span class="btn-emoji">🚀</span>
+        <span class="btn-label">Apply & Scrape</span>
+        <span class="btn-sub">Login, scrape profile & scholarships, sync to Google Sheets</span>
+      </button>
+
+      <div id="workflowProgress" class="workflow-progress hidden">
+        <div class="progress-steps">
+          <div class="progress-step">
+            <span class="step-number">1</span>
+            <span class="step-text">Login to Bold.org</span>
+            <span id="step1Status" class="step-icon">⏳</span>
+          </div>
+          <div class="progress-step">
+            <span class="step-number">2</span>
+            <span class="step-text">Wait for CAPTCHA (if needed)</span>
+            <span id="step2Status" class="step-icon">⏳</span>
+          </div>
+          <div class="progress-step">
+            <span class="step-number">3</span>
+            <span class="step-text">Scrape Profile Data</span>
+            <span id="step3Status" class="step-icon">⏳</span>
+          </div>
+          <div class="progress-step">
+            <span class="step-number">4</span>
+            <span class="step-text">Navigate to Scholarships</span>
+            <span id="step4Status" class="step-icon">⏳</span>
+          </div>
+          <div class="progress-step">
+            <span class="step-number">5</span>
+            <span class="step-text">Scrape All Scholarships (All Pages)</span>
+            <span id="step5Status" class="step-icon">⏳</span>
+          </div>
+          <div class="progress-step">
+            <span class="step-number">6</span>
+            <span class="step-text">Sync to Google Sheets</span>
+            <span id="step6Status" class="step-icon">⏳</span>
+          </div>
+        </div>
+        <div id="currentProgress" class="current-progress">Starting...</div>
+      </div>
+
+      <div id="successSection" class="success-section hidden">
+        <div class="success-header">✅ Scraping Complete!</div>
+        <div id="successMessage" class="success-message"></div>
+        <div class="sheet-link-box">
+          <div class="sheet-label">📊 Your Google Sheet:</div>
+          <input id="googleSheetLink" type="url" class="sheet-input" readonly />
+          <button id="btnCopyLink" class="btn-small">Copy Link</button>
+          <button id="btnOpenSheet" class="btn-small">Open Sheet</button>
+        </div>
+        <button id="btnNewScrape" class="btn-small">Scrape Again</button>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btnOpen" class="btn btn-open">
+        <span class="btn-emoji">🔗</span>
+        <span class="btn-label">Open From List</span>
+        <span class="btn-sub">Next scholarship from your tracker</span>
+      </button>
+
+      <button id="btnFillAll" class="btn btn-fill">
+        <span class="btn-emoji">✨</span>
+        <span class="btn-label">Fill This Page</span>
+        <span class="btn-sub" id="fillSub">Use when the application form is on screen</span>
+      </button>
+
+      <button id="btnDone" class="btn btn-done">
+        <span class="btn-emoji">✅</span>
+        <span class="btn-label">I'm Done — Submitted</span>
+        <span class="btn-sub">After you submit on the website</span>
+      </button>
+    </div>
+
+    <div class="secondary-row">
+      <button id="btnSkip" class="btn-text">Skip this one</button>
+    </div>
+
+    <p id="lastAction" class="feedback">Ready</p>
+  </div>
+  <script src="panel.js"></script>
+</body>
+</html>

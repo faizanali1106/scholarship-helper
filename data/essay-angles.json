@@ -1,0 +1,32 @@
+[
+  {
+    "id": "discipline",
+    "title": "Daily discipline angle",
+    "prompt": "Use when the scholarship asks about challenges, responsibility, or personal growth.",
+    "snippet": "Living with Type 1 diabetes means there are no off days. Every meal, activity, and even stress requires planning—carbs, insulin timing, and physical activity. That constant responsibility built discipline, focus, and accountability beyond what most peers learn in high school."
+  },
+  {
+    "id": "athlete",
+    "title": "Student-athlete angle",
+    "prompt": "Use for sports, leadership, or balancing commitments scholarships.",
+    "snippet": "As a basketball player managing Type 1 diabetes, I've learned to plan ahead for practices and games—checking blood sugar, adjusting insulin, and fueling my body. Athletics didn't compete with my health; they taught me to prepare, adapt, and show up consistently."
+  },
+  {
+    "id": "marketing",
+    "title": "Marketing / behavior angle",
+    "prompt": "Use for business, marketing, communications, or career-goal prompts.",
+    "snippet": "Marketing is about understanding behavior—how people think, what drives decisions, and how systems influence outcomes. Managing diabetes trained me to analyze patterns, adjust strategies, and make informed decisions under changing conditions. I want to apply that mindset to communicating value for clients."
+  },
+  {
+    "id": "financial",
+    "title": "Medical cost / need angle",
+    "prompt": "Use when the application asks about financial need or obstacles.",
+    "snippet": "Managing a chronic condition comes with ongoing medical costs that extend beyond what most families plan for. Despite these challenges, I am committed to continuing my education and building a future where I can apply my skills in a meaningful way."
+  },
+  {
+    "id": "resilience",
+    "title": "Resilience closing angle",
+    "prompt": "Strong closing paragraph for general essays.",
+    "snippet": "Type 1 diabetes is not something I can set aside—it is a constant part of my life. But instead of allowing it to limit me, I have used it to develop discipline, resilience, and a strong sense of responsibility. These qualities will guide me through college and into my career."
+  }
+]

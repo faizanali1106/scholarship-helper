@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Scholarship Application — Scholarship Helper</title>
+  <style>
+    :root {
+      --bg: #f0f4f8;
+      --surface: #fff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --demo: #7c3aed;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 32px 16px 64px;
+    }
+    .wrap { max-width: 640px; margin: 0 auto; }
+    .banner {
+      background: linear-gradient(135deg, #ede9fe, #dbeafe);
+      border: 1px solid #c4b5fd;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+      font-size: 0.92rem;
+      color: #5b21b6;
+    }
+    .banner strong { display: block; margin-bottom: 4px; }
+    h1 { font-size: 1.5rem; margin-bottom: 6px; }
+    .sub { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+    form {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+      border: 1px solid var(--border);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    label.full { grid-column: 1 / -1; }
+    input, textarea, select {
+      font: inherit;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      background: #fff;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    .essay-hint { font-weight: 400; font-size: 0.8rem; color: var(--muted); }
+    button[type="submit"] {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: var(--demo);
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      opacity: 0.6;
+    }
+    button[type="submit"]:hover { opacity: 0.75; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="banner">
+      <strong>🧪 Demo form — for testing only</strong>
+      Open the Scholarship Helper extension → click <strong>Fill This Page</strong>. Do not submit — this is not a real application.
+    </div>
+
+    <h1>Sample Scholarship Application</h1>
+    <p class="sub">Generic demo form with the same field types as real scholarship sites.</p>
+
+    <form action="#" method="post" onsubmit="return false;">
+      <div class="grid">
+        <label>First name
+          <input type="text" name="firstName" id="firstName" autocomplete="given-name" />
+        </label>
+        <label>Last name
+          <input type="text" name="lastName" id="lastName" autocomplete="family-name" />
+        </label>
+        <label class="full">Full name
+          <input type="text" name="fullName" id="fullName" autocomplete="name" />
+        </label>
+        <label>Email address
+          <input type="email" name="email" id="email" autocomplete="email" />
+        </label>
+        <label>Phone number
+          <input type="tel" name="phone" id="phone" autocomplete="tel" />
+        </label>
+        <label class="full">Street address
+          <input type="text" name="address" id="street" autocomplete="street-address" />
+        </label>
+        <label>City
+          <input type="text" name="city" id="city" autocomplete="address-level2" />
+        </label>
+        <label>State
+          <input type="text" name="state" id="state" autocomplete="address-level1" />
+        </label>
+        <label>Zip code
+          <input type="text" name="zip" id="zip" autocomplete="postal-code" />
+        </label>
+        <label class="full">High school name
+          <input type="text" name="highSchool" id="highSchool" />
+        </label>
+        <label>GPA
+          <input type="text" name="gpa" id="gpa" placeholder="e.g. 3.5" />
+        </label>
+        <label>Intended major
+          <input type="text" name="major" id="major" />
+        </label>
+        <label class="full">Career goals
+          <textarea name="careerGoals" id="careerGoals" placeholder="Describe your career goals..."></textarea>
+        </label>
+        <label class="full">Essay — Why do you deserve this scholarship?
+          <span class="essay-hint">500 word limit</span>
+          <textarea name="essay" id="essay" placeholder="Write your essay here..."></textarea>
+        </label>
+      </div>
+      <button type="submit" disabled title="Demo only — do not submit">Submit application (demo)</button>
+    </form>
+  </div>
+</body>
+</html>

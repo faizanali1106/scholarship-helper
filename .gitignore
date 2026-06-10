@@ -1,0 +1,13 @@
+node_modules/
+**/node_modules/
+.env
+.browser-data/
+data/settings.json
+data/apply-screenshots/
+data/.playwright-installed
+data/niche-state.json
+fastweb/state.json
+*.log
+.DS_Store
+__MACOSX/
+scholarship-bot/

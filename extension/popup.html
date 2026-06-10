@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="panel.css" />
+  <style>body.popup { width: 260px; padding: 16px; text-align: center; }</style>
+</head>
+<body class="popup panel">
+  <div class="logo" style="margin: 0 auto 12px">🎓</div>
+  <p style="font-size: 13px; color: #64748b; margin-bottom: 12px; line-height: 1.5">
+    Click below to open the full control panel
+  </p>
+  <button id="openSide" class="btn btn-fill" style="align-items: center; text-align: center">
+    <span class="btn-label">Open Panel</span>
+  </button>
+  <script>
+    document.getElementById("openSide").onclick = async (e) => {
+      e.preventDefault();
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab?.id) chrome.sidePanel.open({ tabId: tab.id });
+      window.close();
+    };
+  </script>
+</body>
+</html>

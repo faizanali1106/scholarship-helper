@@ -1,0 +1,20 @@
+#sch-helper-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2147483647;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: #2563eb;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.sch-helper-success { background: #16a34a; }
+.sch-helper-warn { background: #d97706; }
+.sch-helper-error { background: #dc2626; }

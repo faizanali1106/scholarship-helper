@@ -1,0 +1,24 @@
+{
+  "name": "luke-scholarship-bot",
+  "version": "1.0.0",
+  "description": "Scholarship automation bot for Robert Luke Peach — T1D Athlete, Lebanon HS",
+  "main": "scholarship-bot.js",
+  "scripts": {
+    "start": "node scholarship-bot.js",
+    "install-browsers": "npx playwright install chromium",
+    "setup": "npm install && npx playwright install chromium",
+    "scrape": "node run_scraper.js",
+    "create-accounts": "node create_accounts.js",
+    "create-accounts-new": "node create_accounts_new.js",
+    "create-accounts:multiple": "node create_accounts.js"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0",
+    "csv-stringify": "^6.4.6",
+    "csv-parse": "^5.5.5",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

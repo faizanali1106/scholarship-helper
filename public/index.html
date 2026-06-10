@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scholarship Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="portal" id="portal">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner">
+        <div class="sidebar-brand">
+          <div class="brand-mark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3L2 9l10 6 10-6-10-6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M2 15l10 6 10-6M2 12l10 6 10-6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity="0.5"/>
+            </svg>
+          </div>
+          <div>
+            <span class="brand-name">Scholarship Hub</span>
+            <span class="brand-tag">Student portal</span>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main">
+          <button type="button" class="nav-item active" data-tab="scholarships">
+            <span class="nav-icon" aria-hidden="true">📋</span>
+            <span class="nav-label">Scholarships</span>
+            <span class="nav-badge" id="navBadgeTotal">0</span>
+          </button>
+          <button type="button" class="nav-item" data-tab="profile">
+            <span class="nav-icon" aria-hidden="true">👤</span>
+            <span class="nav-label">Profile</span>
+          </button>
+          <button type="button" class="nav-item" data-tab="essays">
+            <span class="nav-icon" aria-hidden="true">✍️</span>
+            <span class="nav-label">Essays</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-progress">
+          <div class="progress-header">
+            <span>Application progress</span>
+            <strong id="progressPct">0%</strong>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="mini-stats">
+            <div><span id="miniTodo">0</span><label>To do</label></div>
+            <div><span id="miniDone">0</span><label>Done</label></div>
+            <div><span id="miniMatch">0</span><label>Top match</label></div>
+          </div>
+        </div>
+
+        <div class="sidebar-user">
+          <div class="avatar" id="userAvatar">LP</div>
+          <div class="user-meta">
+            <strong id="userName">Loading...</strong>
+            <span id="userTags">Ohio · T1D · Athlete</span>
+          </div>
+          <span class="status-pill live" id="serverStatus">
+            <span class="dot on" id="serverDot"></span> Online
+          </span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Main -->
+    <div class="portal-main">
+      <header class="portal-header">
+        <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="header-titles">
+          <p class="header-eyebrow" id="headerEyebrow">Dashboard</p>
+          <h1 class="header-title" id="pageTitle">Scholarship checklist</h1>
+        </div>
+        <div class="header-actions" id="headerActions">
+          <button type="button" class="btn btn-accent" id="btnFindForLuke">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+            Find scholarships
+          </button>
+        </div>
+      </header>
+
+      <main class="portal-content">
+        <!-- SCHOLARSHIPS -->
+        <section class="view-panel" id="panel-scholarships">
+          <div class="hero-banner">
+            <div class="hero-copy">
+              <h2 id="heroNote">Your scholarship command center</h2>
+              <p>Import matched links, copy your profile & essays, open each application, and track status — you submit every form yourself.</p>
+            </div>
+            <div class="hero-stats">
+              <div class="stat-card">
+                <span class="stat-value" id="statTotal">0</span>
+                <span class="stat-label">Total</span>
+              </div>
+              <div class="stat-card accent">
+                <span class="stat-value" id="statTodo">0</span>
+                <span class="stat-label">To do</span>
+              </div>
+              <div class="stat-card success">
+                <span class="stat-value" id="statDone">0</span>
+                <span class="stat-label">Submitted</span>
+              </div>
+              <div class="stat-card glow">
+                <span class="stat-value" id="statMatch">0</span>
+                <span class="stat-label">Strong match</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-grid scholarships-layout">
+            <aside class="panel-side">
+              <div class="glass-card import-card">
+                <div class="card-head">
+                  <h3>Import scholarships</h3>
+                  <p>Pulls public listing links — no logins, no auto-submit.</p>
+                </div>
+                <button type="button" class="btn btn-accent btn-block" id="btnFindForLukeSide">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+                  Find all for me
+                </button>
+                <div class="import-sources">
+                  <span class="source-chip">Diabetes Scholars</span>
+                  <span class="source-chip">Niche</span>
+                  <span class="source-chip">Fastweb OH</span>
+                </div>
+                <div id="scrapeStatus" class="feedback toast" role="status"></div>
+                <details class="expand-block">
+                  <summary>Import from one site</summary>
+                  <div class="btn-stack">
+                    <button class="btn btn-ghost scrape-btn" type="button" data-site="diabetes-scholars">Diabetes Scholars</button>
+                    <button class="btn btn-ghost scrape-btn" type="button" data-site="niche" data-quick="1">Niche.com</button>
+                    <button class="btn btn-ghost scrape-btn" type="button" data-site="fastweb" data-ohio="1">Fastweb (Ohio)</button>
+                    <button class="btn btn-ghost scrape-btn" type="button" data-site="fastweb" data-quick="1">Fastweb (sample)</button>
+                  </div>
+                </details>
+              </div>
+
+              <div class="glass-card tips-card">
+                <h3>How it works</h3>
+                <ol class="steps-list">
+                  <li><span>1</span> Import scholarships above</li>
+                  <li><span>2</span> Open application in new tab</li>
+                  <li><span>3</span> Copy from Profile & Essays</li>
+                  <li><span>4</span> Submit yourself & update status</li>
+                </ol>
+              </div>
+            </aside>
+
+            <div class="panel-main">
+              <div class="glass-card list-card">
+                <div class="toolbar">
+                  <div class="toolbar-left">
+                    <h3>Your checklist</h3>
+                    <span class="result-count" id="resultCount">0 scholarships</span>
+                  </div>
+                  <div class="toolbar-right">
+                    <div class="search-wrap">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+                      <input type="search" id="searchQuery" placeholder="Search scholarships..." autocomplete="off" />
+                    </div>
+                    <select id="filterTag" class="select-dark" aria-label="Filter by tag">
+                      <option value="">All tags</option>
+                      <option value="match">Best match (3+)</option>
+                      <option value="Ohio">Ohio</option>
+                      <option value="Diabetes">Diabetes</option>
+                      <option value="Athlete">Athlete</option>
+                      <option value="Marketing">Marketing</option>
+                    </select>
+                    <select id="filterStatus" class="select-dark" aria-label="Filter by status">
+                      <option value="">All status</option>
+                      <option value="Not Started">Not started</option>
+                      <option value="In Progress">In progress</option>
+                      <option value="Submitted">Submitted</option>
+                      <option value="Skipped">Skipped</option>
+                    </select>
+                  </div>
+                </div>
+                <div id="scholarshipList" class="scholarship-grid">
+                  <div class="empty-state">
+                    <div class="empty-icon">🎓</div>
+                    <h4>No scholarships yet</h4>
+                    <p>Click <strong>Find scholarships</strong> to import matches for diabetes, athlete, Ohio & marketing.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PROFILE -->
+        <section class="view-panel hidden" id="panel-profile">
+          <div class="page-intro">
+            <h2>Profile cheat sheet</h2>
+            <p>Click any field to copy. Paste into application forms as you go.</p>
+            <button type="button" class="btn btn-accent" id="btnCopyAllProfile">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy entire profile
+            </button>
+          </div>
+          <div id="profileFields" class="profile-grid"></div>
+        </section>
+
+        <!-- ESSAYS -->
+        <section class="view-panel hidden" id="panel-essays">
+          <div class="content-grid essays-layout">
+            <div class="glass-card essay-master">
+              <div class="card-head row">
+                <div>
+                  <h3>Master essay</h3>
+                  <p id="essayWordCount">—</p>
+                </div>
+                <button type="button" class="btn btn-accent" id="btnCopyEssay">Copy full essay</button>
+              </div>
+              <div class="essay-preview" id="masterEssayPreview"></div>
+            </div>
+            <div class="glass-card">
+              <div class="card-head">
+                <h3>Essay angles</h3>
+                <p>Ready paragraphs — copy the angle that fits each prompt.</p>
+              </div>
+              <div id="essayAngles" class="angle-grid"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="portal-footer">
+        <span>You fill and submit each form yourself — safe, fast, and nothing gets flagged.</span>
+      </footer>
+    </div>
+  </div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
